@@ -22,6 +22,7 @@ class SilentActor extends Actor {
   def receive = {
     // :+ → appended
     case SilentMessage(data) => internalState = internalState :+ data
+    case GetState(receiver) => receiver ! internalState
   }
 
   def state = internalState
@@ -43,7 +44,13 @@ class SilentActor01Test extends TestKit(ActorSystem("testsystem"))
      }
      "change state when it receives a message, multi-threaded" in {
        // 関連するメッセージをまとめて保持するコンパニオンオブジェクトを使えるようにする？
-//       import SilentActor._
+       import SilentActor._
+
+       val silentActor = system.actorOf(Props[SilentActor], "s3")
+       silentActor ! SilentMessage("whisper1")
+       silentActor ! SilentMessage("whisper2")
+       silentActor ! GetState(testActor)
+       expectMsg(Vector("whisper1", "whisper2"))
 //
 //
 //       // テストを書くと最初は失敗する
