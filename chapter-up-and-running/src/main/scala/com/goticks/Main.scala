@@ -24,6 +24,7 @@ object Main extends App
   val host = config.getString("http.host") // 設定からホスト名とポートを取得
   val port = config.getInt("http.port")
 
+  // system という値でActorSystemを公開している
   implicit val system = ActorSystem()
   implicit val ec = system.dispatcher  // bindAndHandleは暗黙のExecutionContextが必要
 
